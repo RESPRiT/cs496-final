@@ -1,0 +1,7 @@
+# ew gross DS_Store
+*.DS_Store
+*/*.DS_Store
+
+# ew gross swap files
+*.swp
+*/*.swp
