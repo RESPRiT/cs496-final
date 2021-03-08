@@ -70,7 +70,7 @@ async function initiate() {
     d.HRperH = +d.HRperH;
   });
 
-  dataset = baseball.slice(0, 100);
+  dataset = baseball.slice(0, baseball.length / 5);
   console.log(dataset);
 
   // get scales
@@ -128,31 +128,27 @@ function drawVis(dataset) { //draw the circiles initially and on each interactio
   // filter out first
   circle.exit().remove();
 
-  for (const player of dataset) {
-    const playerID = player.playerID
-
-    // enter (keyed data)
-    circle.enter().append("circle")
-      .attr("cx", d => x(d.yearID))
-      .attr("cy", d => y(d.HperAB))
-      .style("fill", d => col(d.type))
-      .attr("r", 4)
-      .style("stroke", "black")
-      .style("opacity", 0.5)
-      .on("mouseover", function (event, d, i) {
-        d3.select(this).attr("r", 8);
-        tooltip.transition()
-          .duration(200)
-          .style("opacity", 1);
-        tooltip.html("Player <b>" + d.nameGiven + "</b>: " + "salary=" + d.salary)
-          .style("left", (event.pageX + 5) + "px")
-          .style("top", (event.pageY - 28) + "px");
-      })
-      .on("mouseout", function (d, i) {
-        d3.select(this).attr("r", 4);
-        tooltip.transition()
-          .duration(500)
-          .style("opacity", 0.5);
-      });
-  }
+  // enter (keyed data)
+  circle.enter().append("circle")
+    .attr("cx", d => x(d.yearID))
+    .attr("cy", d => y(d.HperAB))
+    .style("fill", d => col(d.type))
+    .attr("r", 4)
+    .style("stroke", "black")
+    .style("opacity", 0.5)
+    .on("mouseover", function (event, d, i) {
+      d3.select(this).attr("r", 8);
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 1);
+      tooltip.html("Player <b>" + d.nameGiven + "</b>: " + "salary=" + d.salary)
+        .style("left", (event.pageX + 5) + "px")
+        .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", function (d, i) {
+      d3.select(this).attr("r", 4);
+      tooltip.transition()
+        .duration(500)
+        .style("opacity", 0.5);
+    });
 }
