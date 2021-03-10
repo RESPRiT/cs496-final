@@ -1,20 +1,23 @@
-// Modified from d3scatter_step4.js
+// Initial code modified from d3scatter_step4.js
 
 let width = 750, height = 450;
-let margin = { top: 20, right: 15, bottom: 30, left: 40 };
+let margin = { top: 20, right: 15, bottom: 30, left: 60 };
 let w = width - margin.left - margin.right;
 let h = height - margin.top - margin.bottom;
 
-let startYear = "1984", endYear = "2020";
+let startYear = "1985", endYear = "2016";
 let dataset, maxVol, maxPrice, maxeValue, maxDelta, ranges, filter_query;
-let chart, tooltip, x, y, col;
+// html elements
+let chart, tooltip, dropdown, xAxis, yAxis, yAxisLabel;
+// d3 scales
+let x, y, col;
 let attributes = ["vol", "price", "eValue", "delta"];// list of attributes
 
 initiate()
 
 async function initiate() {
   // read and cleaning data
-  let baseball = await d3.csv("data/baseball.csv");
+  let baseball = await d3.csv("data/baseball_filtered.csv");
   /*
    * Baseball columns:
    * - playerID
@@ -30,36 +33,7 @@ async function initiate() {
    * - HRperH: Homeruns per Hit 
    */
 
-  // build players dataset
-  /*
-  players = {};
-  for (const entry of baseball) {
-    // create new player object if playerID does not currently exist
-    if (!players[entry.playerID]) {
-      players[entry.playerID] = {
-        name: entry.nameGiven,
-        years: {}
-      }
-    }
-    player = players[entry.playerID];
-
-    // create new year object if yearID does not currently exist (it shouldn't)
-    if (!player.years[entry.yearID]) {
-      player.years[entry.yearID] = {
-        atBats: +entry.AB,
-        hits: +entry.H,
-        homeruns: +entry.HR,
-        salary: +entry.salary,
-        battingAvg: +entry.HperAB,
-        homerunsPerHit: +entry.HRperH
-      }
-    }
-  }
-  
-  dataset = players;
-  */
-
-  // set types
+   // set types
   baseball.forEach(d => {
     d.yearID = new Date(d.yearID);
     d.AB = +d.AB;
@@ -70,8 +44,49 @@ async function initiate() {
     d.HRperH = +d.HRperH;
   });
 
-  dataset = baseball.slice(0, baseball.length / 5);
-  console.log(dataset);
+  dataset = baseball;
+
+  // create drop-down menu
+  // derived from: https://www.d3-graph-gallery.com/graph/interactivity_button.html
+  let yOptions = [
+    {
+      name: "Batting Average",
+      value: "HperAB"
+    },
+    {
+      name: "Homeruns per Hit",
+      value: "HRperH"
+    },
+    {
+      name: "Hits",
+      value: "H"
+    },
+    {
+      name: "At Bats",
+      value: "AB"
+    },
+    {
+      name: "Salary",
+      value: "salary"
+    }
+  ];
+
+  dropdown = d3.select("#y-dropdown").append("select");
+
+  dropdown.selectAll("y-options")
+    .data(yOptions)
+    .enter()
+    .append("option")
+    .text(d => d.name)
+    .attr("value", d => d.value);
+
+  dropdown.on("change", function(d) {
+    let yOption = {
+      name: yOptions[d3.select(this).property("selectedIndex")].name,
+      value: d3.select(this).property("value")
+    };
+    updateY(dataset, yOption);
+  });
 
   // get scales
   x = d3.scaleTime()
@@ -97,31 +112,65 @@ async function initiate() {
     .style("opacity", 0);
 
   // draw axes
-  chart.append("g")
+  xAxis = chart.append("g")
+    .attr("class", ".x-axis")
     .attr("transform", "translate(0," + h + ")")
     .call(d3.axisBottom(x))
-    .append("text")
+    
+  xAxis.append("text")
     .attr("x", w)
     .attr("y", -6)
     .style("text-anchor", "end")
     .style("fill", "black")
     .text("Year");
 
-  chart.append("g")
+  yAxis = chart.append("g")
+    .attr("class", ".y-axis")
     .call(d3.axisLeft(y))
-    .append("text")
+  
+  yAxisLabel = yAxis.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 6)
     .attr("dy", ".71em")
     .style("text-anchor", "end")
     .style("fill", "black")
     .text("Batting Average");
+  
+  console.log(yAxis);
 
   //all the data is now loaded, so draw the initial vis
   drawVis(dataset);
 }
 
-function drawVis(dataset) { //draw the circiles initially and on each interaction with a control
+function updateY(dataset, yOption) {
+  console.log(yOption);
+  console.log(dataset);
+
+  let column = [];
+  for(const entry of dataset) {
+    column.push(entry[yOption.value]);
+  }
+  console.log(column);
+
+  // Rescale the Y-axis, update label
+  y.domain([
+    d3.min(column), 
+    d3.max(column)
+  ]);
+
+  yAxis.transition()
+    .duration(750)
+    .ease(d3.easeSinInOut)
+    .call(d3.axisLeft(y));
+  
+  yAxisLabel.text(yOption.name);
+
+  // Redraw the vis
+  drawVis(dataset, yOption.value);
+}
+
+function drawVis(dataset, yOption="HperAB") { //draw the circiles initially and on each interaction with a control
+  /*
   let circle = chart.selectAll("circle")
     .data(dataset, d => d.playerID + d.yearID); // assign key!!!
 
@@ -141,7 +190,7 @@ function drawVis(dataset) { //draw the circiles initially and on each interactio
       tooltip.transition()
         .duration(200)
         .style("opacity", 1);
-      tooltip.html("Player <b>" + d.nameGiven + "</b>: " + "salary=" + d.salary)
+      tooltip.html("Player <b>" + d.nameGiven + "</b>: " + "H/AB=" + d.H + "/" + d.AB)
         .style("left", (event.pageX + 5) + "px")
         .style("top", (event.pageY - 28) + "px");
     })
@@ -151,4 +200,63 @@ function drawVis(dataset) { //draw the circiles initially and on each interactio
         .duration(500)
         .style("opacity", 0.5);
     });
+  */
+
+  // derived from: https://www.d3-graph-gallery.com/graph/line_several_group.html
+  groupedData = d3.nest()
+    .key(d => d.playerID)
+    .entries(dataset);
+
+  let lines = chart.selectAll(".player-line")
+    .data(groupedData, d => d);
+  
+  lines.exit().remove();
+
+  let paths = lines.enter()
+    .append("path")
+      .attr("class", "player-line")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("opacity", "0")
+      .attr("stroke-width", 1)
+      .attr("d", d => {
+        return d3.line()
+          .x(d => x(d.yearID))
+          .y(d => y(d[yOption]))
+          (d.values);
+      })
+      .on("mouseover", function(event, d, i) {
+        d3.select(this)
+          .attr("stroke", "#002D72")
+          .attr("stroke-width", 2)
+          .attr("opacity", "1");
+        
+        let player = d.values[0];
+        let startYear = d.values[0].yearID;
+        let endYear = d.values[d.values.length - 1].yearID;
+        let printString = "Player <b>" + player.nameGiven + 
+          "</b> of team " + player["teamID.x"] +
+          " from " + startYear.getUTCFullYear() + "-" + endYear.getUTCFullYear();
+
+        tooltip.transition()
+          .duration(200)
+          .style("opacity", 1);
+
+        tooltip.html(printString)
+          .style("left", (event.pageX + 5) + "px")
+          .style("top", (event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(e, d, i) {
+        d3.select(this)
+          .attr("stroke", "black")
+          .attr("stroke-width", 1)
+          .attr("opacity", "0.05");
+        
+        tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+      .transition()
+      .duration(500)
+      .attr("opacity", "0.05");
 }
