@@ -256,9 +256,9 @@ async function initiate() {
     }
   ];
 
-  yOption = yOptions[4];
-  yOption1 = yOptions[0];
-  yOption2 = yOptions[1];
+  yOption = yOptions[0];
+  yOption1 = yOptions[4];
+  yOption2 = yOptions[3];
   
   currVar = {
     min: 0,
