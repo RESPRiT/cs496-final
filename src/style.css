@@ -1,0 +1,155 @@
+.row {
+  display: flex;
+  width: min-content;
+}
+
+.col {
+}
+
+.frame {
+  display: flex;
+}
+
+.sub-frame {
+  height: 50%;
+}
+
+.OAK {
+ stroke: #0BA6AD;
+}
+
+.FLO {
+ stroke: #0C70B0;
+}
+
+.COL {
+ stroke: #0D37B4;
+}
+
+.NYN {
+ stroke: #1F0EB7;
+}
+
+.ATL {
+ stroke: #5D0FBB;
+}
+
+.HOU {
+ stroke: #C111A6;
+}
+
+.PHI {
+ stroke: #C5126A;
+}
+
+.NYA {
+ stroke: #C8132C;
+}
+
+.LAA {
+ stroke: #CB3C14;
+}
+
+.SFN {
+ stroke: #CF7F15;
+}
+
+.MON {
+ stroke: #D2C417;
+}
+
+.CLE {
+ stroke: #A1D518;
+}
+
+.BAL {
+ stroke: #60D819;
+}
+
+.CHN {
+ stroke: #1EDC1A;
+}
+
+.BOS {
+ stroke: #1BDF5D;
+}
+
+.SLN {
+ stroke: #1DE2A4;
+}
+
+.ANA {
+ stroke: #1EDDE5;
+}
+
+.TEX {
+ stroke: #23E8AE;
+}
+
+.KCA {
+ stroke: #27EA70;
+}
+
+.DET {
+ stroke: #2CEC34;
+}
+
+.CAL {
+ stroke: #68EE31;
+}
+
+.SDN {
+ stroke: #ABF135;
+}
+
+.TOR {
+ stroke: #EBF33A;
+}
+
+.CHA {
+ stroke: #F4BF40;
+}
+
+.PIT {
+ stroke: #F68745;
+}
+
+.SEA {
+ stroke: #F8514A;
+}
+
+.ARI {
+ stroke: #F94F81;
+}
+
+.LAN {
+ stroke: #FB55BD;
+}
+
+.CIN {
+ stroke: #FC5AF6;
+}
+
+.TBA {
+ stroke: #CF60FE;
+}
+
+.WAS {
+ stroke: #9F66FF;
+}
+
+.MIL {
+ stroke: #726CFF;
+}
+
+.MIN {
+ stroke: #729CFF;
+}
+
+.MIA {
+ stroke: #78CEFF;
+}
+
+.ML4 {
+ stroke: #80FDFF;
+}

@@ -5,16 +5,45 @@
   <script src="http://d3js.org/d3.v6.min.js"></script>
   <script src="https://d3js.org/d3-collection.v1.min.js"></script>
   <script src="https://d3js.org/d3-ease.v2.min.js"></script>
+  <script src="https://unpkg.com/d3-simple-slider"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="viz.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link href="style.css" rel="stylesheet">
   <div id="layout">
+    <h1>Baseball Careers Across History (1995 - 2016)</h1>
     <div id="title" class="frame">
-      <p>Baseball Things</p>
-      <div id="y-dropdown"></div>
+      <div class="ui">
+        <div class="frame">
+          Main View Y-Axis:<div id="y-dropdown"></div>
+        </div>
+        <div class="frame">
+          Upper Supplementary View Y-Axis:<div id="y-dropdown-1"></div>
+        </div>
+        <div class="frame">
+          Lower Supplementary View Y-Axis:<div id="y-dropdown-2"></div>
+        </div>
+        <label for="player-selection">Filter by Players: </label>
+        <input id="player-selection" size="30">
+        <label for="team-selection">Filter by Teams: </label>
+        <input id="team-selection" size="30">
+      </div>
     </div>
     <div class="row">
       <div id="visualization" class="frame">
+        <div>
+          <div><div id="slider-vertical"></div></div>
+        </div>
         <svg class="chart"></svg>
-        <script src="viz.js"></script>
+      </div>
+      <div class="col">
+        <div id="visualization" class="sub-frame">
+          <svg class="sup-chart-1"></svg>
+        </div>
+        <div id="visualization" class="sub-frame">
+          <svg class="sup-chart-2"></svg>
+        </div>
       </div>
     </div>
 </body>
